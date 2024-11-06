@@ -6,6 +6,7 @@
     <title>不延时学生列表</title>
     <link href="http://cdn.staticfile.net/bootstrap/5.3.2/css/bootstrap.css" rel="stylesheet">
     <script src="http://cdn.staticfile.net/bootstrap/5.3.2/js/bootstrap.bundle.js"></script>
+
 </head>
 <body>
 <!--
@@ -18,29 +19,39 @@
     <h1>{{student.class_text}}</h1>
     <h1>{{student.class_text_id}}</h1>
     {% endfor %}
+
+    for i in grades:
+    print(students.filter(class_text=i))
+
 -->
     <div class="row">
       <div style="position: fixed" class="col-4">
         <div id="list-example" class="list-group">
-            {% for grade in grades %}
-            <a style="font-size: calc(1rem + 1.2vw);" class="list-group-item list-group-item-action" href="#{{grade.id}}">{{grade.class_text}}</a>
-            {% endfor %}
+            {% if grades %}
+                {% for grade in grades %}
+                <a style="font-size: calc(1rem + 1.2vw);" class="list-group-item list-group-item-action" href="#grade{{grade.id}}">{{grade.class_text}}</a>
+                {% endfor %}
+            {% endif %}
         </div>
       </div>
       <div style="margin-left: auto" class="col-8">
         <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
-            {% for student in students %}
-            <div id="{{student.class_text_id}}">
-                <h1 style="font-size: calc(2rem + 1.2vw);">{{student.student_text}}</h1>
-                <p style="font-size: calc(1rem + 1.2vw);">{{student.info_text}}</p>
-                <hr>
-                <br>
+            {% for i in grades %}
+            <div id="grade{{i.id}}">
+                {% for student in students %}
+                    {% if student.class_text_id == i.id %}
+                        <h1 style="font-size: calc(2rem + 1.2vw);">{{student.student_text}}</h1>
+                        <p style="font-size: calc(1rem + 1.2vw);">班级：{{student.class_text}}</p>
+                        <p style="font-size: calc(0.6rem + 1.2vw);">备注信息：{{student.info_text}}</p>
+                        <hr>
+
+                    {% endif %}
+                {% endfor %}
             </div>
-          {% endfor %}
+            {% endfor %}
         </div>
       </div>
     </div>
-
 
 </body>
 </html>
