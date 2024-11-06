@@ -24,7 +24,7 @@
     print(students.filter(class_text=i))
 
 -->
-    <div class="row">
+    <div style="width: 100%" class="row">
       <div style="position: fixed" class="col-4">
         <div id="list-example" class="list-group">
             {% if grades %}
@@ -37,14 +37,19 @@
       <div style="margin-left: auto" class="col-8">
         <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
             {% for i in grades %}
-            <div id="grade{{i.id}}">
+            <div  id="grade{{i.id}}">
                 {% for student in students %}
                     {% if student.class_text_id == i.id %}
+                    <div>
                         <h1 style="font-size: calc(2rem + 1.2vw);">{{student.student_text}}</h1>
                         <p style="font-size: calc(1rem + 1.2vw);">班级：{{student.class_text}}</p>
                         <p style="font-size: calc(0.6rem + 1.2vw);">备注信息：{{student.info_text}}</p>
+                        <div class="form-check form-switch">
+                          <input style="width: 3.4em; height: 1.6em;" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                          <label style="margin-top: 0.3em; margin-left: 0.5em;" class="form-check-label" for="flexSwitchCheckDefault">勾选表示已离校</label>
+                        </div>
                         <hr>
-
+                    </div>
                     {% endif %}
                 {% endfor %}
             </div>
