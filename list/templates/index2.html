@@ -1,52 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>不延时学生列表</title>
-    <link href="http://cdn.staticfile.net/bootstrap/5.3.2/css/bootstrap.css" rel="stylesheet">
-    <script src="http://cdn.staticfile.net/bootstrap/5.3.2/js/bootstrap.bundle.js"></script>
+  <meta charset="UTF-8">
+  <title>学生考勤数据</title>
+    <style>
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+
+        th {
+          background-color: #f2f2f2;
+        }
+          body #data-table th:first-child,
+          body #data-table td:first-child {
+            display: none;
+          }
+    </style>
 </head>
 <body>
-    <div class="d-flex align-items-start">
-        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-          <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</button>
-          <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</button>
-          <button class="nav-link" id="v-pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#v-pills-disabled" type="button" role="tab" aria-controls="v-pills-disabled" aria-selected="false" disabled>Disabled</button>
-          <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
-          <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
-        </div>
-        <div class="tab-content" id="v-pills-tabContent">
-          <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">...</div>
-          <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">...</div>
-          <div class="tab-pane fade" id="v-pills-disabled" role="tabpanel" aria-labelledby="v-pills-disabled-tab" tabindex="0">...</div>
-          <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0">...</div>
-          <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
-        </div>
-    </div>
-<!--
-    {% for student in students %}
-    <h1>{{student.student_text}}</h1>
-    <h1>{{student.class_text}}</h1>
-    {% endfor %}
+  <h1>不上延时学生离校考勤数据</h1>
 
-    <div class="row">
-      <div style="position: fixed" class="col-4">
-        <div id="list-example" class="list-group">
-            {% for grade in grades %}
-            <a style="font-size: calc(5rem + 1.2vw);" class="list-group-item list-group-item-action" href="#{{grade}}">{{grade}}</a>
-            {% endfor %}
-        </div>
-      </div>
-      <div style="margin-left: auto" class="col-8">
-        <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
-            {% for student in students %}
-          <h1 style="font-size: calc(10rem + 1.2vw);" id="{{student.class_text}}">{{student.student_text}}</h1>
-          <p style="font-size: calc(5rem + 1.2vw);">{{student.info_text}}</p>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-       -->
+  <table id="data-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>班级</th>
+            <th>学生姓名</th>
+            <th>离校时间</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.class_name }}</td>
+            <td>{{ row.student_name }}</td>
+            <td>{{ row.check_time }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+<!--  <script>-->
+<!--    document.addEventListener('DOMContentLoaded', function () {-->
+<!--        fetch('get_checkeddata')-->
+<!--       .then(response => response.text())-->
+<!--       .then(html => {-->
+<!--            // 直接替换整个表格内容-->
+<!--            document.querySelector('#data-table').innerHTML = html;-->
+<!--        });-->
+<!--    });-->
+<!--  </script>-->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('get_checkeddata')
+     .then(response => response.text())
+     .then(html => {
+            // 假设获取到的html中，表格数据在 <tbody> 标签内
+            var startIndex = html.indexOf('<tbody>');
+            var endIndex = html.indexOf('</tbody>') + '</tbody>'.length;
+            var tableContent = html.substring(startIndex, endIndex);
+            document.querySelector('#data - table tbody').innerHTML = tableContent;
+        });
+    });
+  </script>
 </body>
 </html>

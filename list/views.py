@@ -1,16 +1,50 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from list.models import Student, Grade_Class
-
+from django.db.models import Count
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+from.models import Student, CheckedData
+import json
 # Create your views here.
+
+def get_checkeddata(request):
+    try:
+        data = CheckedData.objects.all().values()
+        data_list = list(data)
+        return render(request, 'index2.html', {'data': data_list})
+    except Exception as e:
+        print(e)
+        return HttpResponse("获取数据失败")
+@csrf_exempt
+def record_check(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            student_id = data.get('studentId')
+            check_time = data.get('checkTime')
+            #ip_address = data.get('ipAddress')
+
+            student = Student.objects.get(id = student_id)
+            CheckedData.objects.create(
+                student_name = student.student_text,
+                check_time = check_time,
+                class_name = student.class_text.class_text,
+                #ip_address = ip_address
+            )
+            return JsonResponse({'message': '记录成功'})
+        except Exception as e:
+            return JsonResponse({'message': '记录失败，错误原因：{}'.format(str(e))}, status = 500)
+    return JsonResponse({'message': '请求方法不允许'}, status = 405)
+
 def index(request):
     students = Student.objects.all()
-    grades = Grade_Class.objects.filter(student_count__gt=0)
-    # grades = Grade_Class.objects.filter(student_count__gt=0)
-    # for student in students:
-    #     print(student.id, student.student_text, student.class_text)
-    # print('————————分割线————————')
+    grades = Grade_Class.objects.annotate(annotated_student_count=Count('student')).filter(annotated_student_count__gt=0)
+
     for i in grades:
         print(students.filter(class_text=i))
     print(grades)
     return render(request, 'index.html', {'students': students, 'grades': grades})
+
+
