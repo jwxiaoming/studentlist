@@ -51,43 +51,95 @@
       </div>
     </div>
 
-  <script>
+<!--  <script>-->
 
-    // 获取所有的复选框
-    const checkboxes = document.querySelectorAll('.form-check-input');
-    checkboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', function () {
-        const studentId = this.dataset.studentId;  // 获取学生ID
-        const isChecked = this.checked;
-        const currentTime = new Date().toISOString();  // 获取当前时间，格式化为ISO字符串便于后端处理
-        //const ipAddress = window.location.hostname; // 获取本地主机名（可能近似内网IP
+<!--    // 获取所有的复选框-->
+<!--    const checkboxes = document.querySelectorAll('.form-check-input');-->
+<!--    checkboxes.forEach(checkbox => {-->
+<!--      checkbox.addEventListener('change', function () {-->
+<!--        const studentId = this.dataset.studentId;  // 获取学生ID-->
+<!--        const isChecked = this.checked;-->
+<!--        const currentTime = new Date().toISOString();  // 获取当前时间，格式化为ISO字符串便于后端处理-->
+<!--        //const ipAddress = window.location.hostname; // 获取本地主机名（可能近似内网IP-->
 
-        if (isChecked) {
-          // 当复选框被勾选后，阻止取消勾选操作
-          this.addEventListener('click', function (e) {
-            e.preventDefault();
-          });
-          // 使用fetch发送AJAX请求到后端，这里假设你的后端有个记录勾选信息的接口叫'/record_check'
-          fetch('record_check', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              studentId: studentId,
-              checkTime: currentTime,
-            })
-          })
-         .then(response => response.json())
-         .then(data => {
-            console.log(data);  // 可以根据后端返回的数据进行相应处理，这里先简单打印
-          })
-         .catch(error => {
-            console.error('Error:', error);
-          });
-        }
-      });
-    });
-  </script>
+<!--        if (isChecked) {-->
+<!--          // 当复选框被勾选后，阻止取消勾选操作-->
+<!--          this.addEventListener('click', function (e) {-->
+<!--            e.preventDefault();-->
+<!--          });-->
+<!--          // 使用fetch发送AJAX请求到后端，这里假设你的后端有个记录勾选信息的接口叫'/record_check'-->
+<!--          fetch('record_check', {-->
+<!--            method: 'POST',-->
+<!--            headers: {-->
+<!--              'Content-Type': 'application/json',-->
+<!--            },-->
+<!--            body: JSON.stringify({-->
+<!--              studentId: studentId,-->
+<!--              checkTime: currentTime,-->
+<!--            })-->
+<!--          })-->
+<!--         .then(response => response.json())-->
+<!--         .then(data => {-->
+<!--            console.log(data);  // 可以根据后端返回的数据进行相应处理，这里先简单打印-->
+<!--          })-->
+<!--         .catch(error => {-->
+<!--            console.error('Error:', error);-->
+<!--          });-->
+<!--        }-->
+<!--      });-->
+<!--    });-->
+<!--  </script>-->
+<script>
+    // 页面加载完成后执行，先检查并设置各学生勾选框初始状态
+    window.onload = function () {
+        // 获取所有的复选框
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        // 遍历每个复选框
+        checkboxes.forEach(checkbox => {
+            const studentName = checkbox.parentNode.previousElementSibling.querySelector('h1').textContent;
+            const studentNameEncoded = encodeURIComponent(studentName);
+            // 发送AJAX请求到后端检查该学生今天是否已勾选
+            fetch('check_student_checked_today/' + studentNameEncoded + '/')
+               .then(response => response.json())
+               .then(data => {
+                    if (data.checked) {
+                        checkbox.checked = true;
+                    }
+                })
+               .catch(error => {
+                    console.error('Error fetching check status:', error);
+                });
+
+            checkbox.addEventListener('change', function () {
+                const studentId = this.dataset.studentId;
+                const isChecked = this.checked;
+                const currentTime = new Date().toISOString();
+
+                if (isChecked) {
+                    this.addEventListener('click', function (e) {
+                        e.preventDefault();
+                    });
+                    fetch('record_check', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            studentId: studentId,
+                            checkTime: currentTime,
+                        })
+                    })
+                  .then(response => response.json())
+                  .then(data => {
+                        console.log(data);
+                    })
+                  .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            });
+        });
+    };
+</script>
 </body>
 </html>

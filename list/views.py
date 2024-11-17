@@ -7,8 +7,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from.models import Student, CheckedData
 import json
+from datetime import datetime
 # Create your views here.
 
+def check_student_checked_today(request, student_name):
+    today = datetime.now().date()
+    checked_data = CheckedData.objects.filter(student_name=student_name, check_time__date=today)
+    return JsonResponse({'checked': checked_data.exists()})
 def get_checkeddata(request):
     try:
         data = CheckedData.objects.all().values()
