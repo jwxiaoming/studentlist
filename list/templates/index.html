@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +7,9 @@
     <title>不延时学生列表</title>
     <link href="http://cdn.staticfile.net/bootstrap/5.3.2/css/bootstrap.css" rel="stylesheet">
     <script src="http://cdn.staticfile.net/bootstrap/5.3.2/js/bootstrap.bundle.js"></script>
+    <link rel="manifest" href="{% static 'json/manifest.json' %}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="{% static 'img/icon.png' %}">
 <!--    <script src="https://cdn.jsdelivr.net/npm/browser-ips@1.0.0/dist/index.min.js"></script>-->
 </head>
 <body>
