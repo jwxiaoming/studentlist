@@ -5,15 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>不延时学生列表</title>
-    <link href="http://cdn.staticfile.net/bootstrap/5.3.2/css/bootstrap.css" rel="stylesheet">
-    <script src="http://cdn.staticfile.net/bootstrap/5.3.2/js/bootstrap.bundle.js"></script>
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+    <script src="{% static '/js/bootstrap.bundle.js'%} "></script>
     <link rel="manifest" href="{% static 'json/manifest.json' %}">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="{% static 'img/icon.png' %}">
-<!--    <script src="https://cdn.jsdelivr.net/npm/browser-ips@1.0.0/dist/index.min.js"></script>-->
 </head>
 <body>
-
     <div style="width: 100%" class="row">
       <div style="position: fixed;height: 100%;overflow-y: scroll;" class="col-4" data-bs-spy="scroll" >
         <div id="list-example" class="list-group scrollspy-example" >
@@ -25,10 +23,10 @@
         </div>
       </div>
       <div style="margin-left: auto" class="col-8">
-        <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
+        <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0" data-bs-root-margin="0px 0px -80% 0px">
             <br>
             {% for i in grades %}
-            <div  id="grade{{i.id}}">
+            <div id="grade{{i.id}}">
                 {% for student in students %}
                     {% if student.class_text_id == i.id %}
                     <div>
@@ -40,9 +38,10 @@
                         <p style="font-size: calc(0.6rem + 1.2vw);">备注：{{student.info_text}}</p>
                         {% endif %}
                         <div style="padding-left: 0;" class="form-check">
-                            <label style="margin-top: 1.3em;float: left" class="form-check-label" for="flexSwitchCheckDefault">勾选表示已离校</label>
+                            <label style="font-size: calc(0.4rem + 2vw);margin-top: 1.8em;float: left;color: var(--bs-secondary-color);" class="form-check-label" for="flexSwitchCheckDefault">勾选表示已离校</label>
                             <input style="width: 5.6em;height: 2.6em;float: right;border: var(--bs-border-width) solid #86b7fe;border-radius: 2rem;" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" data-student-id="{{student.id}}">
                         </div>
+                        <br>
                         <br>
                         <hr>
                         <br>
@@ -55,44 +54,7 @@
       </div>
     </div>
 
-<!--  <script>-->
 
-<!--    // 获取所有的复选框-->
-<!--    const checkboxes = document.querySelectorAll('.form-check-input');-->
-<!--    checkboxes.forEach(checkbox => {-->
-<!--      checkbox.addEventListener('change', function () {-->
-<!--        const studentId = this.dataset.studentId;  // 获取学生ID-->
-<!--        const isChecked = this.checked;-->
-<!--        const currentTime = new Date().toISOString();  // 获取当前时间，格式化为ISO字符串便于后端处理-->
-<!--        //const ipAddress = window.location.hostname; // 获取本地主机名（可能近似内网IP-->
-
-<!--        if (isChecked) {-->
-<!--          // 当复选框被勾选后，阻止取消勾选操作-->
-<!--          this.addEventListener('click', function (e) {-->
-<!--            e.preventDefault();-->
-<!--          });-->
-<!--          // 使用fetch发送AJAX请求到后端，这里假设你的后端有个记录勾选信息的接口叫'/record_check'-->
-<!--          fetch('record_check', {-->
-<!--            method: 'POST',-->
-<!--            headers: {-->
-<!--              'Content-Type': 'application/json',-->
-<!--            },-->
-<!--            body: JSON.stringify({-->
-<!--              studentId: studentId,-->
-<!--              checkTime: currentTime,-->
-<!--            })-->
-<!--          })-->
-<!--         .then(response => response.json())-->
-<!--         .then(data => {-->
-<!--            console.log(data);  // 可以根据后端返回的数据进行相应处理，这里先简单打印-->
-<!--          })-->
-<!--         .catch(error => {-->
-<!--            console.error('Error:', error);-->
-<!--          });-->
-<!--        }-->
-<!--      });-->
-<!--    });-->
-<!--  </script>-->
 <script>
     // 页面加载完成后执行，先检查并设置各学生勾选框初始状态
     window.onload = function () {
@@ -145,5 +107,6 @@
         });
     };
 </script>
+
 </body>
 </html>

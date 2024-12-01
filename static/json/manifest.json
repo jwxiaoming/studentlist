@@ -1,6 +1,6 @@
 {
-  "name": "Your Website Name",
-  "short_name": "延时宝",
+  "name": "延时通",
+  "short_name": "延时通",
   "icons": [
     {
       "src": "icon.png",
@@ -10,6 +10,6 @@
   ],
   "start_url": "/index",
   "display": "standalone",
-  "background_color": "#fff",
+  "background_color": "#f5f8ff",
   "theme_color": "#333"
 }
