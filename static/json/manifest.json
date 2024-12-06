@@ -1,7 +1,7 @@
 {
   "name": "延时通",
   "short_name": "延时通",
-  "icons": [
+  "icons":[
     {
       "src": "icon.png",
       "sizes": "192x192",
