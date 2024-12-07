@@ -62,7 +62,12 @@
         const checkboxes = document.querySelectorAll('.form-check-input');
         // 遍历每个复选框
         checkboxes.forEach(checkbox => {
-            const studentName = checkbox.parentNode.previousElementSibling.querySelector('h1').textContent;
+            // const studentName = checkbox.parentNode.previousElementSibling.querySelector('h1').textContent;
+            const h1Elements = document.querySelectorAll('h1');
+            h1Elements.forEach((h1) => {
+                const studentName = h1.textContent;
+                console.log(studentName);
+            });
             const studentNameEncoded = encodeURIComponent(studentName);
             // 发送AJAX请求到后端检查该学生今天是否已勾选
             fetch('check_student_checked_today/' + studentNameEncoded + '/')

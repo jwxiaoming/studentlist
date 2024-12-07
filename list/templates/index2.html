@@ -22,6 +22,8 @@
           body #data-table td:first-child {
             display: none;
           }
+
+
     </style>
 </head>
 <body>
@@ -47,16 +49,7 @@
         {% endfor %}
     </tbody>
   </table>
-<!--  <script>-->
-<!--    document.addEventListener('DOMContentLoaded', function () {-->
-<!--        fetch('get_checkeddata')-->
-<!--       .then(response => response.text())-->
-<!--       .then(html => {-->
-<!--            // 直接替换整个表格内容-->
-<!--            document.querySelector('#data-table').innerHTML = html;-->
-<!--        });-->
-<!--    });-->
-<!--  </script>-->
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
         fetch('get_checkeddata')
@@ -66,9 +59,10 @@
             var startIndex = html.indexOf('<tbody>');
             var endIndex = html.indexOf('</tbody>') + '</tbody>'.length;
             var tableContent = html.substring(startIndex, endIndex);
-            document.querySelector('#data - table tbody').innerHTML = tableContent;
+            document.querySelector('#data-table tbody').innerHTML = tableContent;
         });
     });
   </script>
 </body>
 </html>
+

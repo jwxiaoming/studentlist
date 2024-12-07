@@ -1,25 +1,226 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>不延时学生列表</title>
-    <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
->
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+    <script src="{% static '/js/bootstrap.bundle.js'%}"></script>
+    <link rel="manifest" href="{% static 'json/manifest.json' %}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="{% static 'img/icon.png' %}">
 </head>
 <body>
-    {% for grade in grades %}
-    <h1>{{grade.class_text}}</h1>
-    <h1>{{grade.id}}</h1>
-    {% endfor %}
-    {% for student in students %}
-    <h1>{{student.student_text}}</h1>
-    <h1>{{student.class_text}}</h1>
-    <h1>{{student.class_text_id}}</h1>
-    {% endfor %}
+    <div style="width: 100%" class="row">
+        <div style="position: fixed;height: 100%;overflow-y: scroll;" class="col-4" data-bs-spy="scroll">
+            <div id="list-example" class="list-group scrollspy-example">
+                {% if grades %}
+                    {% for grade in grades %}
+                        <a style="font-size: calc(1rem + 1.2vw);" class="list-group-item list-group-item-action" href="#grade{{grade.id}}">{{grade.class_text}}</a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div style="margin-left: auto" class="col-8">
+            <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0" data-bs-root-margin="0px 0px -80% 0px">
+                <br>
+                {% for i in grades %}
+                    <div id="grade{{i.id}}">
+                        {% for student in students %}
+                            {% if student.class_text_id == i.id %}
+                                <div>
+                                    <div style="display: block">
+                                        <h1 style="font-size: calc(2rem + 1.2vw);display: inline-block;">{{student.student_text}}</h1>
+                                        <p style="font-size: calc(1rem + 1.2vw);display: inline-block;float: right">{{student.class_text}}</p>
+                                    </div>
+                                    {% if student.info_text != None %}
+                                        <p style="font-size: calc(0.6rem + 1.2vw);">备注：{{student.info_text}}</p>
+                                    {% endif %}
+                                    <div style="padding-left: 0;" class="form-check">
+                                        <label style="font-size: calc(0.4rem + 2vw);margin-top: 1.8em;float: left;color: var(--bs-secondary-color);" class="form-check-label" for="flexSwitchCheckDefault">勾选表示已离校</label>
+                                        <input style="width: 5.6em;height: 2.6em;float: right;border: var(--bs-border-width) solid #86b7fe;border-radius: 2rem;" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" data-student-id="{{student.id}}">
+                                    </div>
+                                    <br>
+                                    <br>
+                                    <hr>
+                                    <br>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
+
+<!--<script>-->
+<!--    // 页面加载完成后执行，先检查并设置各学生勾选框初始状态-->
+<!--    window.onload = function () {-->
+<!--        // 获取所有的复选框-->
+<!--        const checkboxes = document.querySelectorAll('.form-check-input');-->
+<!--        // 每次处理的请求数量（可根据实际情况调整）-->
+<!--        const batchSize = 5;-->
+<!--        // 用于记录当前处理的批次，将其定义在window.onload的作用域内-->
+<!--        let batchIndex = 0;-->
+
+<!--        function processBatch() {-->
+<!--            const start = batchIndex * batchSize;-->
+<!--            const end = Math.min(start + batchSize, checkboxes.length);-->
+<!--            for (let i = start; i < end; i++) {-->
+<!--                const checkbox = checkboxes[i];-->
+<!--                // 获取包含学生名字的h1元素-->
+<!--                const studentNameH1 = checkbox.parentNode.parentNode.querySelector('h1');-->
+<!--                if (studentNameH1) {-->
+<!--                    const studentName = studentNameH1.textContent;-->
+<!--                    // 发送AJAX请求到后端检查该学生今天是否已勾选-->
+<!--                    fetch('check_student_checked_today/' + encodeURIComponent(studentName) + '/')-->
+<!--                  .then(function (response) {-->
+<!--                            return response.json();-->
+<!--                        })-->
+<!--                  .then(function (data) {-->
+<!--                            if (data.checked) {-->
+<!--                                checkbox.checked = true;-->
+<!--                                // 设置为不可取消勾选-->
+<!--                                checkbox.disabled = true;-->
+<!--                            }-->
+<!--                        })-->
+<!--                  .catch(function (error) {-->
+<!--                            console.error('Error fetching check status:', error);-->
+<!--                        });-->
+<!--                } else {-->
+<!--                    console.error('Could not find student name element for checkbox');-->
+<!--                }-->
+
+<!--                // 只在首次添加change事件监听器，避免多次添加-->
+<!--                if (!checkbox.hasAttribute('data-event-bound')) {-->
+<!--                    checkbox.addEventListener('change', function () {-->
+<!--                        const studentId = this.dataset.studentId;-->
+<!--                        const isChecked = this.checked;-->
+<!--                        const currentTime = new Date().toISOString();-->
+
+<!--                        // 如果是勾选状态，只发送记录操作的请求-->
+<!--                        if (isChecked) {-->
+<!--                            fetch('record_check', {-->
+<!--                                method: 'POST',-->
+<!--                                headers: {-->
+<!--                                    'Content-Type': 'application/json'-->
+<!--                                },-->
+<!--                                body: JSON.stringify({-->
+<!--                                    studentId: studentId,-->
+<!--                                    checkTime: currentTime-->
+<!--                                })-->
+<!--                            })-->
+<!--                          .then(function (response) {-->
+<!--                                    return response.json();-->
+<!--                                })-->
+<!--                          .then(function (data) {-->
+<!--                                    console.log(data);-->
+<!--                                })-->
+<!--                          .catch(function (error) {-->
+<!--                                    console.error('Error:', error);-->
+<!--                                });-->
+<!--                        }-->
+<!--                    });-->
+<!--                    // 修正属性名-->
+<!--                    checkbox.setAttribute('data-event-bound', 'true');-->
+<!--                }-->
+<!--            }-->
+<!--            batchIndex++;-->
+<!--            if (batchIndex * batchSize < checkboxes.length) {-->
+<!--                setTimeout(processBatch, 900);-->
+<!--            }-->
+<!--        }-->
+
+<!--        processBatch();-->
+<!--    };-->
+<!--</script>-->
+
+<script>
+    // 页面加载完成后执行，先检查并设置各学生勾选框初始状态
+    window.onload = function () {
+        // 获取所有的复选框
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        // 每次处理的请求数量（可根据实际情况调整）
+        const batchSize = 5;
+        // 用于记录当前处理的批次，将其定义在window.onload的作用域内
+        let batchIndex = 0;
+
+        function processBatch() {
+            const start = batchIndex * batchSize;
+            const end = Math.min(start + batchSize, checkboxes.length);
+            for (let i = start; i < end; i++) {
+                const checkbox = checkboxes[i];
+                // 获取包含学生名字的h1元素
+                const studentNameH1 = checkbox.parentNode.parentNode.querySelector('h1');
+                if (studentNameH1) {
+                    const studentName = studentNameH1.textContent;
+                    // 发送AJAX请求到后端检查该学生今天是否已勾选
+                    fetch('check_student_checked_today/' + encodeURIComponent(studentName) + '/')
+                  .then(function (response) {
+                            return response.json();
+                        })
+                  .then(function (data) {
+                            if (data.checked) {
+                                checkbox.checked = true;
+                                checkbox.disabled = true;
+                            }
+                        })
+                  .catch(function (error) {
+                            console.error('Error fetching check status:', error);
+                        });
+                } else {
+                    console.error('Could not find student name element for checkbox');
+                }
+
+                // 只在首次添加change事件监听器，避免多次添加
+                if (!checkbox.hasAttribute('data-event-bound')) {
+                    checkbox.addEventListener('change', function () {
+                        const studentId = this.dataset.studentId;
+                        const isChecked = this.checked;
+                        const currentTime = new Date().toISOString();
+
+                        // 新增逻辑：如果初始状态是未勾选，勾选后阻止取消勾选
+                        if (!checkbox.hasAttribute('data-initial-checked') && isChecked) {
+                            checkbox.setAttribute('data-initial-checked', 'true');
+                            checkbox.disabled = true;
+                        }
+
+                        if (isChecked) {
+                            fetch('record_check', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    studentId: studentId,
+                                    checkTime: currentTime
+                                })
+                            })
+                          .then(function (response) {
+                                    return response.json();
+                                })
+                          .then(function (data) {
+                                    console.log(data);
+                                })
+                          .catch(function (error) {
+                                    console.error('Error:', error);
+                                });
+                        }
+                    });
+                    checkbox.setAttribute('data-event-bound', 'true');
+                }
+            }
+            batchIndex++;
+            if (batchIndex * batchSize < checkboxes.length) {
+                setTimeout(processBatch, 100);
+            }
+        }
+
+        processBatch();
+    };
+</script>
 
 </body>
 </html>

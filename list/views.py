@@ -16,8 +16,13 @@ def check_student_checked_today(request, student_name):
     return JsonResponse({'checked': checked_data.exists()})
 def get_checkeddata(request):
     try:
+        # 获取所有学生数据
         data = CheckedData.objects.all().values()
         data_list = list(data)
+
+        # 根据学生的某个字段（例如'id'或者其他合适的字段）进行倒序排序
+        data_list.sort(key=lambda x: x['check_time'], reverse=True)
+
         return render(request, 'index2.html', {'data': data_list})
     except Exception as e:
         print(e)
@@ -50,6 +55,6 @@ def index(request):
     for i in grades:
         print(students.filter(class_text=i))
     print(grades)
-    return render(request, 'index.html', {'students': students, 'grades': grades})
+    return render(request, 'index3.html', {'students': students, 'grades': grades})
 
 
